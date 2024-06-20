@@ -1,6 +1,6 @@
-const btn = document.querySelector('.mic-btn');
+const micBtn = document.querySelector('.mic-btn');
 const textInput = document.getElementById('textInput');
-const inputLabel = document.getElementById('inputLabel');
+const sendBtn = document.querySelector('.send-btn');
 
 function speak(text) {
     const textSpeak = new SpeechSynthesisUtterance(text);
@@ -34,23 +34,23 @@ recognition.onresult = (event) => {
     const currentIndex = event.resultIndex;
     const transcript = event.results[currentIndex][0].transcript;
     textInput.value = transcript;
-    inputLabel.textContent = 'Enter or mic';
     takeCommand(transcript.toLowerCase());
 };
 
-btn.addEventListener('click', () => {
-    inputLabel.textContent = 'Listening...';
+function startListening() {
     recognition.start();
-});
+    textInput.value = 'Listening...';
+}
 
-textInput.addEventListener('keypress', (event) => {
-    if (event.key === 'Enter') {
-        const message = textInput.value.trim();
-        if (message) {
-            takeCommand(message.toLowerCase());
-        }
+function sendMessage() {
+    const message = textInput.value.trim();
+    if (message) {
+        takeCommand(message.toLowerCase());
     }
-});
+}
+
+sendBtn.addEventListener('click', sendMessage);
+micBtn.addEventListener('click', startListening);
 
 const numberDictionary = {
     "nashik": "+918792211077",
@@ -91,10 +91,7 @@ function extractMessage(message) {
 function takeCommand(message) {
     if (message.includes('hey') || message.includes('hello')) {
         speak("Hello Sir, How May I Help You?");
-    }else if(message.includes('how are you')){
-        speak("I feel Super Fine!!!. What about you?")
-    } 
-    else if (message.includes("initialize") || message.includes("initialise")) {
+    } else if (message.includes("initialize") || message.includes("initialise")) {
         speak("Initializing ATOM...");
         wishMe();
     } else if (message.includes("wish me")) {
@@ -124,49 +121,44 @@ function takeCommand(message) {
         speak("Today's date is " + date);
     } else if (message.includes('calculator') && message.includes("atom")) {
         window.open('Calculator:///');
-        speak("Opening Calculator...");
+        speak("Opening Calculator");
     } else if (message.includes('whatsapp')) {
         const { number, name } = extractNumbers(message);
         const msg = extractMessage(message);
         if (number) {
-            window.location.href = `whatsapp://send?phone=91${number}&text=Hi%20${msg}!!!!`;
+            window.location.href = `whatsapp://send?phone=${number}&text=Hi%20${msg}!!!!`;
             speak("Sending message to " + name);
         } else {
             window.location.href = "whatsapp://";
             speak("Opening WhatsApp...");
         }
-    }else if (message.includes('open twitter') && message.includes("atom")) {
-        const ope = window.location.href = "fb:";
-        
-        const finalText = "Opening Twitter...";
-        speak(finalText);
-    }else if (message.includes('camera') && message.includes("atom")) {
+    } else if (message.includes('camera') && message.includes("atom")) {
         window.location.href = "microsoft.windows.camera:";
-        speak("Opening Camera...");
+        speak("Opening Camera");
     } else if (message.includes('downloads')) {
         window.location.href = "chrome://downloads";
-        speak("Opening downloads...");
-    } else if ((message.includes('viewer') && message.includes("atom"))) {
+        speak("Opening Downloads");
+    } else if (message.includes('viewer') && message.includes("atom")) {
         window.location.href = "com.microsoft.viewer3d:";
-        speak("Opening 3D Viewer...");
+        speak("Opening 3D Viewer");
     } else if (message.includes('action center') && message.includes("atom")) {
         window.location.href = "ms-actioncenter:";
-        speak("Opening Action Center...");
+        speak("Opening Action Center");
     } else if ((message.includes('clock') || message.includes("alarm")) && message.includes("atom")) {
         window.location.href = "ms-clock:";
-        speak("Opening Clock...");
+        speak("Opening Clock");
     } else if (message.includes('calendar') && message.includes("atom")) {
         window.location.href = "outlookcal:";
-        speak("Opening Calendar...");
+        speak("Opening Calendar");
     } else if (message.includes('projection') && message.includes("atom")) {
         window.location.href = "ms-projection:";
-        speak("Opening Projection Settings...");
+        speak("Opening Projection Settings");
     } else if (message.includes('cortana') && message.includes("atom")) {
         window.location.href = "ms-cortana:";
-        speak("Opening Cortana...");
+        speak("Opening Cortana");
     } else if (message.includes('board') && message.includes("atom")) {
         window.location.href = "ms-whiteboard-cmd:";
-        speak("Opening Whiteboard...");
+        speak("Opening Whiteboard");
     } else if (message.includes('atom')) {
         window.open(`https://www.google.com/search?q=${message.replace(" ", "+")}`, "_blank");
         speak("I found some information for " + message + " on Google.");
