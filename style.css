@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400;500;600;700&display=swap");
+
 * {
     margin: 0;
     padding: 0;
@@ -6,15 +7,20 @@
     font-family: "Roboto Mono", monospace;
 }
 
+body {
+    background-color: black;
+    overflow: hidden;
+}
+
 .main {
     min-height: 100vh;
-    position: relative;
     width: 100%;
     background: #000;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 20px;
 }
 
 .main .image-container {
@@ -29,7 +35,8 @@
 }
 
 .main .image-container .image img {
-    width: 350px;
+    width: 100%;
+    max-width: 350px;
     align-items: center;
 }
 
@@ -50,7 +57,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 40vw;
+    width: 100%;
+    max-width: 40vw;
     height: 50px;
     border-radius: 20px;
     background: rgba(197, 249, 55, 0);
@@ -79,89 +87,46 @@
     font-size: 15px;
     margin-right: 20px;
 }
-body{
-    background-color: black;
-    overflow-y: hidden;
-    overflow-x: hidden;
-}
 
-.square{
-    position: relative;
-    width: 400px;
-    height: 400px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
-.square span:nth-child(1){
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: radial-gradient(#6b72ff00 50%, #000dff3b 40%);
-    box-shadow: 0 0 50px rgb(25, 0, 255), inset 0 0 50px rgb(25, 0, 255);
-    border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
-    transition: 0.5s;
-    animation: animate1 6s linear infinite;
-}
 
-.square span:nth-child(2){
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: radial-gradient(#6b72ff00 50%, #0d00ff3b 40%);
-    box-shadow: 0 0 50px rgba(255, 0, 115, 0.556), inset 0 0 50px rgb(102, 0, 255);
-    border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
-    transition: 0.5s;
-    animation: animate1 4s linear infinite;
-}
-.square span:nth-child(3){
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: radial-gradient(#6b72ff00 50%, #000dff3b 40%);
-    box-shadow: 0 0 50px rgba(255, 0, 128, 0.252), inset 0 0 50px rgb(38, 0, 255);
-    border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
-    transition: 0.5s;
-    animation: animate1 8s linear infinite;
-}
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    .main .image-container h1 {
+        font-size: 30px;
+    }
 
-@keyframes animate1{
-    0%{
-        transform: roatate(0deg);
+    .main .image-container p {
+        font-size: 14px;
+        margin-bottom: 20px;
     }
-    100%{
-        transform:rotate(-360deg)
-    }
-}
-@keyframes animate2{
-    0%{
-        transform: roatate(0deg);
-    }
-    100%{
-        transform:rotate(360deg)
-    }
-}
-@keyframes animate3{
-    0%{
-        transform: roatate(0deg);
-    }
-    100%{
-        transform:rotate(360deg)
+
+    .main .input {
+        width: 80vw;
     }
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400;500;600;700&display=swap");
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Roboto Mono", monospace;
-}
+@media (max-width: 480px) {
+    .main .image-container h1 {
+        font-size: 24px;
+    }
 
+    .main .image-container p {
+        font-size: 12px;
+        margin-bottom: 20px;
+    }
+
+    .main .input .content {
+        font-size: 12px;
+        margin-right: 10px;
+    }
+
+    .main .input .talk {
+        width: 40px;
+        height: 40px;
+    }
+
+    .main .input .talk i {
+        font-size: 16px;
+    }
+}
