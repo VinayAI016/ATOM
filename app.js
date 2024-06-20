@@ -1,21 +1,18 @@
-const btn = document.querySelector('.talk');
-const content = document.querySelector('.content');
-
+const btn = document.querySelector('.mic-btn');
+const textInput = document.getElementById('textInput');
+const inputLabel = document.getElementById('inputLabel');
 
 function speak(text) {
-    const text_speak = new SpeechSynthesisUtterance(text);
-
-    text_speak.rate = 1;
-    text_speak.volume = 1;
-    text_speak.pitch = 1;
-
-    window.speechSynthesis.speak(text_speak);
+    const textSpeak = new SpeechSynthesisUtterance(text);
+    textSpeak.rate = 1;
+    textSpeak.volume = 1;
+    textSpeak.pitch = 1;
+    window.speechSynthesis.speak(textSpeak);
 }
 
 function wishMe() {
-    var day = new Date();
-    var hour = day.getHours();
-
+    const day = new Date();
+    const hour = day.getHours();
     if (hour >= 0 && hour < 12) {
         speak("Good Morning Boss...");
     } else if (hour >= 12 && hour < 17) {
@@ -26,7 +23,7 @@ function wishMe() {
 }
 
 window.addEventListener('load', () => {
-    speak("Initializing atom...");
+    speak("Initializing ATOM...");
     wishMe();
 });
 
@@ -36,175 +33,144 @@ const recognition = new SpeechRecognition();
 recognition.onresult = (event) => {
     const currentIndex = event.resultIndex;
     const transcript = event.results[currentIndex][0].transcript;
-    content.textContent = transcript;
+    textInput.value = transcript;
+    inputLabel.textContent = 'Enter or mic';
     takeCommand(transcript.toLowerCase());
 };
 
 btn.addEventListener('click', () => {
-    content.textContent = "Listening...";
+    inputLabel.textContent = 'Listening...';
     recognition.start();
 });
-var na="";
-var number=""
-var numberDictionary = {
-    "nashik": +918792211077 ,
-    "varnika": +916366670560,
-    "harshita": +919886903039,
-    "harshitha": +919886903039,
-    };
 
-// Input sentence
-
-
-var dictNames = Object.keys(numberDictionary);
-
-// Function to extract numbers based on names mentioned in the sentence
-function extractNumbers(message, numberDictionary) {
-    // Split the sentence into words, omitting punctuation
-    var words = message.split(/\s|[\.,\/#!$%\^&\*;:{}=\-_`~()]/).filter(Boolean);
-    var numbers = [];
-
-    // Iterate over each word
-    for (var i = 0; i < words.length; i++) {
-        // Iterate over each key in the dictionary
-        for (var j = 0; j < dictNames.length; j++) {
-            // Check if the word matches any key in the dictionary
-            if (words[i] === dictNames[j]) {
-                na = words[i];
-                // If there's a match, add the corresponding number to the numbers array
-                numbers.push(numberDictionary[dictNames[j]]);
-            }
-        }message
-    }
-
-    return numbers.length > 0 ? numbers : false;
-}
-
-function extractMessage(message){
-    var word = message.split(/\s|[\.,\/#!$%\^&\*;:{}=\-_`~()]/).filter(Boolean);
-    var me=[];
-    for(var i=0; i < word.length; i++){
-        if(word[i]=='that'){
-            for ( var j = i+1; j < word.length ; j++){
-                me.push(word[j]);
-                console.log("Extracted numbers:", me);
-            }
+textInput.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+        const message = textInput.value.trim();
+        if (message) {
+            takeCommand(message.toLowerCase());
         }
     }
-    return me
+});
+
+const numberDictionary = {
+    "nashik": "+918792211077",
+    "varnika": "+916366670560",
+    "harshita": "+919886903039",
+    "harshitha": "+919886903039",
+};
+
+function extractNumbers(message) {
+    const words = message.split(/\s|[\.,\/#!$%\^&\*;:{}=\-_`~()]/).filter(Boolean);
+    let numbers = [];
+    const match = message.match(/\d+/g);
+    let name = "";
+
+    for (let word of words) {
+        if (numberDictionary[word]) {
+            name = word;
+            numbers.push(numberDictionary[word]);
+        }
+    }
+
+    if (numbers.length === 0 && match) {
+        numbers = match.join('');
+        name = numbers;
+        return { number: numbers.length > 10 ? numbers.slice(0, 10) : numbers, name };
+    } else if (numbers.length > 0) {
+        return { number: numbers, name };
+    }
+    return false;
 }
 
-// Extract numbers from the sentence based on names in the dictionary
+function extractMessage(message) {
+    const words = message.split(/\s|[\.,\/#!$%\^&\*;:{}=\-_`~()]/).filter(Boolean);
+    const index = words.indexOf('that');
+    return index !== -1 ? words.slice(index + 1).join(' ') : "";
+}
 
 function takeCommand(message) {
-    
-
-    if (message.includes('hey') || message.includes('hello') ) {
+    if (message.includes('hey') || message.includes('hello')) {
         speak("Hello Sir, How May I Help You?");
-    } else if (message.includes("initialize") || message.includes("initialise")) {
-        speak("Initializing atom...");
+    }else if(message.includes('how are you')){
+        speak("I feel Super Fine!!!. What about you?")
+    } 
+    else if (message.includes("initialize") || message.includes("initialise")) {
+        speak("Initializing ATOM...");
         wishMe();
-    } else if (message.includes("wish me") ) {
+    } else if (message.includes("wish me")) {
         wishMe();
     } else if (message.includes("open google") && message.includes("atom")) {
         window.open("https://google.com", "_blank");
         speak("Opening Google...");
-    }else if (message.includes("what's your name") || message.includes("what is your name")) {
-        
-        speak("Hi My Name is atom!!!");
+    } else if (message.includes("what's your name") || message.includes("what is your name")) {
+        speak("Hi, my name is ATOM!");
     } else if (message.includes("open youtube") && message.includes("atom")) {
         window.open("https://youtube.com", "_blank");
-        speak("Opening Youtube...");
+        speak("Opening YouTube...");
     } else if (message.includes("open facebook") && message.includes("atom")) {
         window.open("https://facebook.com", "_blank");
         speak("Opening Facebook...");
-    } else if (message.includes('what is') || message.includes('who is') || message.includes('what are') && message.includes("ion")) {
+    } else if ((message.includes('what is') || message.includes('who is') || message.includes('what are')) && message.includes("atom")) {
         window.open(`https://www.google.com/search?q=${message.replace(" ", "+")}`, "_blank");
-        const finalText = "This is what I found on the internet regarding " + message;
-        speak(finalText);
+        speak("This is what I found on the internet regarding " + message);
     } else if (message.includes('wikipedia') && message.includes("atom")) {
         window.open(`https://en.wikipedia.org/wiki/${message.replace(/\b(wikipedia|atom)\b/gi, "").trim()}`, "_blank");
-        const finalText = "This is what I found on Wikipedia regarding " + message;
-        speak(finalText);
+        speak("This is what I found on Wikipedia regarding " + message);
     } else if (message.includes('time') && message.includes("atom")) {
         const time = new Date().toLocaleString(undefined, { hour: "numeric", minute: "numeric" });
-        const finalText = "The current time is " + time;
-        speak(finalText);
+        speak("The current time is " + time);
     } else if (message.includes('date') && message.includes("atom")) {
         const date = new Date().toLocaleString(undefined, { month: "short", day: "numeric" });
-        const finalText = "Today's date is " + date;
-        speak(finalText);
+        speak("Today's date is " + date);
     } else if (message.includes('calculator') && message.includes("atom")) {
         window.open('Calculator:///');
-        const finalText = "Opening Calculator";
-        speak(finalText);
-    }else if (message.includes('whatsapp')  ) {
-        var x = extractNumbers(message, numberDictionary);
-        var y = extractMessage(message);
-
-// Output the extracted numbers
-        console.log("Extracted numbers:", x); // Output: Extracted numbers: [1234567890, 9876543210]
-
-        if(x!=false){
-        window.location.href = "whatsapp://send?phone="+x+"&text=Hi%20"+y+"!!!!";
-        const finalText = "Sending Message To "+na;
-        speak(finalText);}
-        else{
-            window.location.href="whatsapp://";
-            const finalText="Opening Whatsapp";
-            speak(finalText);
+        speak("Opening Calculator...");
+    } else if (message.includes('whatsapp')) {
+        const { number, name } = extractNumbers(message);
+        const msg = extractMessage(message);
+        if (number) {
+            window.location.href = `whatsapp://send?phone=91${number}&text=Hi%20${msg}!!!!`;
+            speak("Sending message to " + name);
+        } else {
+            window.location.href = "whatsapp://";
+            speak("Opening WhatsApp...");
         }
+    }else if (message.includes('open twitter') && message.includes("atom")) {
+        const ope = window.location.href = "fb:";
         
+        const finalText = "Opening Twitter...";
+        speak(finalText);
     }else if (message.includes('camera') && message.includes("atom")) {
         window.location.href = "microsoft.windows.camera:";
-        const finalText = "Opening Camera";
-        speak(finalText);
-    }
-    else if (message.includes('downloads') ) {
+        speak("Opening Camera...");
+    } else if (message.includes('downloads')) {
         window.location.href = "chrome://downloads";
-        const finalText = "Opening downloads";
-        speak(finalText);
-    }
-    else if (message.includes('viewer') && message.includes("atom")) {
+        speak("Opening downloads...");
+    } else if ((message.includes('viewer') && message.includes("atom"))) {
         window.location.href = "com.microsoft.viewer3d:";
-        const finalText = "Opening 3D Viewer";
-        speak(finalText);
-    }
-    else if (message.includes('action center') && message.includes("atom")) {
+        speak("Opening 3D Viewer...");
+    } else if (message.includes('action center') && message.includes("atom")) {
         window.location.href = "ms-actioncenter:";
-        const finalText = "Opening Action Center";
-        speak(finalText);
-    }
-    else if (message.includes('clock') || message.includes("alarm") && message.includes("atom")) {
+        speak("Opening Action Center...");
+    } else if ((message.includes('clock') || message.includes("alarm")) && message.includes("atom")) {
         window.location.href = "ms-clock:";
-        const finalText = "Opening Clock";
-        speak(finalText);
-    }
-    else if (message.includes('calendar') && message.includes("atom")) {
+        speak("Opening Clock...");
+    } else if (message.includes('calendar') && message.includes("atom")) {
         window.location.href = "outlookcal:";
-        const finalText = "Opening Calender";
-        speak(finalText);
-    }
-    else if (message.includes('projection') && message.includes("atom")) {
+        speak("Opening Calendar...");
+    } else if (message.includes('projection') && message.includes("atom")) {
         window.location.href = "ms-projection:";
-        const finalText = "Opening Projection Settings";
-        speak(finalText);
-    }
-    else if (message.includes('cortana') && message.includes("atom")) {
+        speak("Opening Projection Settings...");
+    } else if (message.includes('cortana') && message.includes("atom")) {
         window.location.href = "ms-cortana:";
-        const finalText = "Opening Cortana";
-        speak(finalText);
-    }
-    else if (message.includes('board') && message.includes("atom")) {
+        speak("Opening Cortana...");
+    } else if (message.includes('board') && message.includes("atom")) {
         window.location.href = "ms-whiteboard-cmd:";
-        const finalText = "Opening Whiteboard";
-        speak(finalText);
-    }
-     else if (message.includes('atom')) {
-        window.open(`https://www.google.com/search?q=${message.replace(" ", "+","atom")}`, "_blank");
-        const finalText = "I found some information for " + message + " on Google";
-        speak(finalText);
+        speak("Opening Whiteboard...");
+    } else if (message.includes('atom')) {
+        window.open(`https://www.google.com/search?q=${message.replace(" ", "+")}`, "_blank");
+        speak("I found some information for " + message + " on Google.");
     } else {
-        speak("Sorry am Not Able To get you. Please Specify my name before Giving Any Command!!");
+        speak("Sorry, I am not able to understand you. Please specify my name before giving any command.");
     }
 }
